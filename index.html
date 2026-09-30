@@ -569,7 +569,7 @@ function updateBullet(b) {
       if (w.type === "brick") {
         damageBrick(w, b);
       } else if (w.type === "base") {
-        destroyBase();
+        destroyBase(w);
       } else if (w.type === "steel") {
         sfx.hitWall();
         spawnSpark(b.x + b.w / 2, b.y + b.h / 2, "#9aa5b1");
@@ -614,7 +614,7 @@ function damageBrick(w, b) {
   }
 }
 
-function destroyBase() {
+function destroyBase(w) {
   if (state.over || state.won) return;
   // 基地被毁，游戏结束
   state.over = true;
