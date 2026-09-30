@@ -351,11 +351,12 @@ function buildMap(rows) {
 
   state.walls = walls;
   state.spawnPoints = spawnPoints.length ? spawnPoints : [
-    { x: TILE * 0.5 + TILE / 2, y: TILE / 2 },
-    { x: TILE * 6.5 + TILE / 2, y: TILE / 2 },
-    { x: TILE * 12.5 + TILE / 2, y: TILE / 2 },
+    { x: 1 * TILE + TILE / 2, y: TILE / 2 },
+    { x: 6 * TILE + TILE / 2, y: TILE / 2 },
+    { x: 11 * TILE + TILE / 2, y: TILE / 2 },
   ];
-  spawnPlayer(playerPos);
+  state.playerSpawn = playerPos || { x: FIELD_W / 2, y: FIELD_H - TILE / 2 };
+  spawnPlayer(state.playerSpawn);
 }
 
 function makeWall(x, y, type) {
@@ -377,10 +378,13 @@ function spawnPlayer(pos) {
 }
 
 function makeTank(x, y, kind, dir) {
+  const w = TILE * 0.8;
+  const h = TILE * 0.8;
   return {
     kind,             // "player" | "enemy"
-    x, y,
-    w: TILE * 0.8, h: TILE * 0.8,
+    x: x - w / 2,     // 传入的是中心坐标，此处转为左上角
+    y: y - h / 2,
+    w, h,
     dir,
     speed: kind === "player" ? 2.2 : 1.35,
     hp: kind === "player" ? 1 : 1,
@@ -646,10 +650,9 @@ function killPlayer() {
     return;
   }
   // 重生
-  const sp = state.spawnPoints[0] || { x: FIELD_W / 2, y: FIELD_H - TILE };
   setTimeout(() => {
     if (!state.over && !state.won) {
-      spawnPlayer({ x: sp.x, y: FIELD_H - TILE / 2 });
+      spawnPlayer(state.playerSpawn);
       state.player.spawnProtect = 90;
       updateHUD();
     }
